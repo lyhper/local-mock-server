@@ -1,13 +1,14 @@
 {
   "name": "local-mock-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "a local mock server for development",
   "main": "index.js",
   "bin": {
-    "mock": "bin/mock"
+    "mock": "bin/index"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lyhper/local-mock-server.git"
   },
   "keywords": [
     "mock",
@@ -15,7 +16,7 @@
   ],
   "author": "lyhper",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "commander": "^2.15.1",
     "express": "^4.16.3",
     "morgan": "^1.9.0"
