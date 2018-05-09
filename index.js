@@ -2,53 +2,41 @@ const express = require('express')
 const path = require('path')
 const morgan = require('morgan')
 const app = express()
+const utils = require('./lib/utils')
 
 /**
  * 启动mock server
  * @param {string} dir mock文件目录
+ * @param {number} port 监听端口
  */
-function start(dir) {
-  dir = dir || 'mock'
+function start(dir = 'mock', port = 3000) {
   const mockDir = path.join(process.cwd(), dir)
-  console.info('mock dir is', mockDir)
+  console.info('[info] mock dir is', mockDir)
 
   // 打印请求记录
   app.use(morgan('tiny'))
 
   app.use((req, res, next) => {
     const reqPath = req.path
-    const filePath = transferCamelCaseToKebabCase(
-      path.join(mockDir, reqPath.slice(1))
-    )
-    try {
-      // 强制加载文件
-      delete require.cache[filePath]
-      const result = require(filePath)
-      res.json(result)
-    } catch (e) {
+    if (reqPath === '/favicon.ico') {
       res.status(404).send('404 Not Found')
+      return
     }
+    const filePath = utils.transferCamelCaseToKebabCase(
+      path.join(mockDir, reqPath.slice(1))
+    ) + '.js'
+    const result = utils.parseFile(filePath)
+    res.json(result)
   })
 
   app.use((err, req, res, next) => {
-    console.error(err.stack)
+    console.error('[error]', err.stack)
     res.status(500).send('500 Internal Server Error')
   })
 
-  app.listen(3000, () => {
-    console.info('mock server is running at: http://localhost:3000')
+  app.listen(port, () => {
+    console.info(`[info] mock server is running at: http://localhost:${port}`)
   })
-}
-
-/**
- * 驼峰转中横线
- * @param text
- * @returns {string} 中横线格式字符串
- */
-function transferCamelCaseToKebabCase(text) {
-  // 匹配中横线
-  const lineReg = /([a-z])([A-Z])/g
-  return text.replace(lineReg, (matched, p1, p2) => `${p1}-${p2.toLowerCase()}`)
 }
 
 module.exports = start
