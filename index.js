@@ -3,6 +3,7 @@ const path = require('path')
 const morgan = require('morgan')
 const app = express()
 const utils = require('./lib/utils')
+const cors = require('cors')
 
 /**
  * 启动mock server
@@ -13,6 +14,12 @@ function start(dir = 'mock', port = 3000) {
   const mockDir = path.join(process.cwd(), dir)
   console.info('[info] mock dir is', mockDir)
 
+  // 添加跨域头
+  app.use(cors({
+    origin: true,
+    credentials: true
+  }))
+
   // 打印请求记录
   app.use(morgan('tiny'))
 
@@ -22,9 +29,7 @@ function start(dir = 'mock', port = 3000) {
       res.status(404).send('404 Not Found')
       return
     }
-    const filePath = utils.transferCamelCaseToKebabCase(
-      path.join(mockDir, reqPath.slice(1))
-    ) + '.js'
+    const filePath = path.join(mockDir, reqPath.slice(1)) + '.js'
     const result = utils.parseFile(filePath)
     res.json(result)
   })

@@ -1,6 +1,6 @@
 {
   "name": "local-mock-server",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "a local mock server for development",
   "main": "index.js",
   "bin": {
@@ -18,7 +18,8 @@
   "license": "ISC",
   "dependencies": {
     "commander": "^2.15.1",
+    "cors": "^2.8.5",
     "express": "^4.16.3",
-    "morgan": "^1.9.0"
+    "morgan": "^1.9.1"
   }
 }
